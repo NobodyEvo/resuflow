@@ -69,7 +69,7 @@ export const LandingPage: React.FC<Props> = ({ onStart }) => {
        </main>
        
        <footer className="py-6 text-center text-slate-400 text-sm">
-         © {new Date().getFullYear()} ResuFlow. All rights reserved.
+         © {new Date().getFullYear()} Sahil Rajoba / ResuFlow. All rights reserved.
        </footer>
     </div>
   );
