@@ -102,15 +102,6 @@ export const FormWorkspace: React.FC = () => {
               />
               <p className="text-xs text-gray-400 mt-1">Separate multiple links with |</p>
             </div>
-            <div className="col-span-1 md:col-span-2">
-              <label className="label">Professional Summary</label>
-              <AutoResizeTextarea
-                className="input-field min-h-[80px]"
-                value={activeSection.summary || ''}
-                onChange={(e) => updateSection(activeSection.id, { summary: e.target.value })}
-                placeholder="A brief overview of your professional background..."
-              />
-            </div>
           </div>
         )}
 
