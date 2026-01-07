@@ -12,8 +12,22 @@ import {
 } from 'lucide-react';
 import { SectionType } from '../../types';
 
-export const Sidebar: React.FC = () => {
+interface Props {
+  onClose?: () => void;
+}
+
+export const Sidebar: React.FC<Props> = ({ onClose }) => {
   const { sections, activeSectionId, setActiveSection, addSection, removeSection } = useResumeStore();
+
+  const handleSectionClick = (id: string) => {
+    setActiveSection(id);
+    if (onClose) onClose();
+  };
+
+  const handleAddSection = (type: SectionType) => {
+    addSection(type);
+    if (onClose) onClose();
+  };
 
   const getIcon = (type: SectionType) => {
     switch (type) {
@@ -27,8 +41,8 @@ export const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="w-full h-full bg-slate-900 text-slate-300 flex flex-col border-r border-slate-700">
-      <div className="p-4 border-b border-slate-700">
+    <div className="w-full h-full bg-slate-900 text-slate-300 flex flex-col">
+      <div className="p-4 border-b border-slate-700 shrink-0">
         <h1 className="text-xl font-bold text-white tracking-tight flex items-center gap-2">
           <span className="text-blue-500">Resu</span>Flow
         </h1>
@@ -36,10 +50,10 @@ export const Sidebar: React.FC = () => {
       </div>
 
       <div className="flex-1 overflow-y-auto custom-scrollbar p-2 space-y-1">
-        {sections.map((section, index) => (
+        {sections.map((section) => (
           <div
             key={section.id}
-            onClick={() => setActiveSection(section.id)}
+            onClick={() => handleSectionClick(section.id)}
             className={`
               group flex items-center gap-3 p-3 rounded-md cursor-pointer transition-all
               ${activeSectionId === section.id ? 'bg-blue-600 text-white shadow-md' : 'hover:bg-slate-800'}
@@ -65,21 +79,21 @@ export const Sidebar: React.FC = () => {
         ))}
       </div>
 
-      <div className="p-4 border-t border-slate-700 bg-slate-900">
+      <div className="p-4 border-t border-slate-700 bg-slate-900 shrink-0">
         <div className="grid grid-cols-2 gap-2">
-          <button onClick={() => addSection('list')} className="flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
+          <button onClick={() => handleAddSection('list')} className="flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
             <Briefcase size={14} /> Work
           </button>
-          <button onClick={() => addSection('education')} className="flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
+          <button onClick={() => handleAddSection('education')} className="flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
             <GraduationCap size={14} /> Edu
           </button>
-          <button onClick={() => addSection('projects')} className="flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
+          <button onClick={() => handleAddSection('projects')} className="flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
             <Code size={14} /> Project
           </button>
-          <button onClick={() => addSection('skills')} className="flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
+          <button onClick={() => handleAddSection('skills')} className="flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
             <Wrench size={14} /> Skills
           </button>
-          <button onClick={() => addSection('custom')} className="col-span-2 flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
+          <button onClick={() => handleAddSection('custom')} className="col-span-2 flex items-center justify-center gap-2 p-2 bg-slate-800 hover:bg-slate-700 rounded text-xs transition-colors">
             <Type size={14} /> Custom
           </button>
         </div>

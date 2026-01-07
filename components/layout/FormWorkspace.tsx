@@ -2,7 +2,6 @@ import React from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { AutoResizeTextarea } from '../forms/AutoResizeTextarea';
 import { Plus, Trash, ArrowUp, ArrowDown, Type, List, Heading, Italic } from 'lucide-react';
-import { CustomBlockType } from '../../types';
 
 export const FormWorkspace: React.FC = () => {
   const { 
@@ -34,8 +33,8 @@ export const FormWorkspace: React.FC = () => {
   };
 
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar bg-gray-50">
-      <div className="max-w-3xl mx-auto p-8 pb-32">
+    <div className="h-full overflow-y-auto custom-scrollbar bg-gray-50/50">
+      <div className="max-w-3xl mx-auto p-4 md:p-8 pb-32">
         <div className="mb-6 flex justify-between items-center">
           <div className="flex-1 mr-4">
             <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Section Title</label>
@@ -47,15 +46,12 @@ export const FormWorkspace: React.FC = () => {
               placeholder="e.g. Experience"
             />
           </div>
-          <div className="flex gap-2">
-            {/* We could add global section moving here if needed */}
-          </div>
         </div>
 
         {/* --- Profile Form --- */}
         {activeSection.type === 'profile' && (
-          <div className="grid grid-cols-2 gap-4">
-            <div className="col-span-2">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="col-span-1 md:col-span-2">
               <label className="label">Full Name</label>
               <input
                 className="input-field text-lg font-bold"
@@ -82,7 +78,7 @@ export const FormWorkspace: React.FC = () => {
                 placeholder="+1 234 567 890"
               />
             </div>
-            <div className="col-span-2">
+            <div className="col-span-1 md:col-span-2">
               <label className="label">Links (Website / LinkedIn / Github)</label>
               <input
                 className="input-field"
@@ -106,9 +102,9 @@ export const FormWorkspace: React.FC = () => {
                 >
                   <Trash size={16} />
                 </button>
-                <div className="grid grid-cols-2 gap-4 mb-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
                   {/* Title Field */}
-                  <div className="col-span-2 md:col-span-1">
+                  <div className="col-span-1">
                     <label className="label">
                       {activeSection.type === 'projects' ? 'Project Name' : 
                        activeSection.type === 'education' ? 'Institution' : 'Organization'}
@@ -123,10 +119,10 @@ export const FormWorkspace: React.FC = () => {
                   
                   {/* Date Field (Hidden for Projects) */}
                   {activeSection.type !== 'projects' && (
-                    <div className="col-span-2 md:col-span-1">
+                    <div className="col-span-1">
                       <label className="label">Date Range</label>
                       <input
-                        className="input-field text-right"
+                        className="input-field md:text-right"
                         value={item.date}
                         onChange={(e) => updateListItem(activeSection.id, item.id, { date: e.target.value })}
                         placeholder="Jan 2020 - Present"
@@ -135,7 +131,7 @@ export const FormWorkspace: React.FC = () => {
                   )}
 
                   {/* Subtitle Field */}
-                  <div className="col-span-2">
+                  <div className="col-span-1 md:col-span-2">
                     <label className="label">
                       {activeSection.type === 'projects' ? 'Languages / Technologies Used' : 
                        activeSection.type === 'education' ? 'Degree / Field of Study' : 'Role'}
@@ -173,8 +169,8 @@ export const FormWorkspace: React.FC = () => {
         {activeSection.type === 'skills' && (
           <div className="space-y-4">
              {activeSection.items.map((item) => (
-              <div key={item.id} className="flex gap-3 items-start bg-white p-3 rounded border border-gray-200">
-                 <div className="w-1/3">
+              <div key={item.id} className="flex flex-col md:flex-row gap-3 items-start bg-white p-3 rounded border border-gray-200">
+                 <div className="w-full md:w-1/3">
                     <label className="label">Category</label>
                     <input
                       className="input-field font-semibold"
@@ -183,7 +179,7 @@ export const FormWorkspace: React.FC = () => {
                       placeholder="Languages"
                     />
                  </div>
-                 <div className="flex-1">
+                 <div className="flex-1 w-full">
                     <label className="label">Skills List</label>
                     <AutoResizeTextarea
                       className="input-field"
@@ -194,7 +190,7 @@ export const FormWorkspace: React.FC = () => {
                  </div>
                  <button 
                   onClick={() => removeSkillItem(activeSection.id, item.id)}
-                  className="mt-6 text-gray-400 hover:text-red-500"
+                  className="self-end md:self-center md:mt-6 text-gray-400 hover:text-red-500"
                 >
                   <Trash size={16} />
                 </button>
@@ -216,23 +212,23 @@ export const FormWorkspace: React.FC = () => {
                <p className="text-sm text-blue-800 font-medium mb-3">Add a generic block:</p>
                <div className="grid grid-cols-4 gap-2">
                  <button onClick={() => addCustomBlock(activeSection.id, 'heading')} className="block-btn">
-                   <Heading size={16} /> Heading
+                   <Heading size={16} /> <span className="hidden md:inline">Heading</span>
                  </button>
                  <button onClick={() => addCustomBlock(activeSection.id, 'subtitle')} className="block-btn">
-                   <Italic size={16} /> Subtitle
+                   <Italic size={16} /> <span className="hidden md:inline">Subtitle</span>
                  </button>
                  <button onClick={() => addCustomBlock(activeSection.id, 'list')} className="block-btn">
-                   <List size={16} /> List
+                   <List size={16} /> <span className="hidden md:inline">List</span>
                  </button>
                  <button onClick={() => addCustomBlock(activeSection.id, 'text')} className="block-btn">
-                   <Type size={16} /> Text
+                   <Type size={16} /> <span className="hidden md:inline">Text</span>
                  </button>
                </div>
             </div>
 
             {activeSection.items.map((block, index) => (
               <div key={block.id} className="relative group bg-white p-4 rounded-lg border border-gray-200 shadow-sm">
-                <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="absolute top-2 right-2 flex gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                   <button onClick={() => moveBlock(index, 'up')} className="p-1 text-gray-400 hover:text-gray-600"><ArrowUp size={14} /></button>
                   <button onClick={() => moveBlock(index, 'down')} className="p-1 text-gray-400 hover:text-gray-600"><ArrowDown size={14} /></button>
                   <button onClick={() => removeCustomBlock(activeSection.id, block.id)} className="p-1 text-gray-400 hover:text-red-500"><Trash size={14} /></button>
@@ -263,7 +259,7 @@ export const FormWorkspace: React.FC = () => {
                     <input 
                       type="text"
                       className="w-1/3 border-b border-gray-300 text-sm text-right focus:outline-none focus:border-blue-500 placeholder-gray-300"
-                      placeholder="Date (Optional)"
+                      placeholder="Date"
                       value={block.date || ''}
                       onChange={(e) => updateCustomBlock(activeSection.id, block.id, { date: e.target.value })}
                     />
