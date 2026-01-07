@@ -1,12 +1,14 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useResumeStore } from '../../store/useResumeStore';
 import { AutoResizeTextarea } from '../forms/AutoResizeTextarea';
-import { Plus, Trash, ArrowUp, ArrowDown, Type, List, Heading, Italic } from 'lucide-react';
+import { Plus, Trash, ArrowUp, ArrowDown, Type, List, Heading, Italic, ArrowRight, Check, FileText } from 'lucide-react';
 
 export const FormWorkspace: React.FC = () => {
   const { 
     sections, 
     activeSectionId, 
+    setActiveSection,
+    addSection,
     updateSection, 
     addListItem, 
     updateListItem, 
@@ -20,7 +22,16 @@ export const FormWorkspace: React.FC = () => {
     reorderCustomBlock
   } = useResumeStore();
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
   const activeSection = sections.find(s => s.id === activeSectionId);
+  const activeIndex = sections.findIndex(s => s.id === activeSectionId);
+
+  // Scroll to top when active section changes
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [activeSectionId]);
 
   if (!activeSection) return <div className="p-8 text-center text-gray-500">Select a section to edit</div>;
 
@@ -32,8 +43,11 @@ export const FormWorkspace: React.FC = () => {
     }
   };
 
+  const isLastSection = activeIndex === sections.length - 1;
+  const nextSection = isLastSection ? null : sections[activeIndex + 1];
+
   return (
-    <div className="h-full overflow-y-auto custom-scrollbar bg-gray-50/50">
+    <div ref={scrollContainerRef} className="h-full overflow-y-auto custom-scrollbar bg-gray-50/50">
       <div className="max-w-3xl mx-auto p-4 md:p-8 pb-32">
         <div className="mb-6 flex justify-between items-center">
           <div className="flex-1 mr-4">
@@ -87,6 +101,15 @@ export const FormWorkspace: React.FC = () => {
                 placeholder="linkedin.com/in/johndoe | github.com/johndoe"
               />
               <p className="text-xs text-gray-400 mt-1">Separate multiple links with |</p>
+            </div>
+            <div className="col-span-1 md:col-span-2">
+              <label className="label">Professional Summary</label>
+              <AutoResizeTextarea
+                className="input-field min-h-[80px]"
+                value={activeSection.summary || ''}
+                onChange={(e) => updateSection(activeSection.id, { summary: e.target.value })}
+                placeholder="A brief overview of your professional background..."
+              />
             </div>
           </div>
         )}
@@ -275,6 +298,61 @@ export const FormWorkspace: React.FC = () => {
             )}
           </div>
         )}
+
+        {/* --- Navigation Footer --- */}
+        <div className="mt-12 pt-8 border-t border-gray-200">
+          {!isLastSection && nextSection && (
+            <div className="flex justify-end">
+              <button
+                onClick={() => setActiveSection(nextSection.id)}
+                className="group flex items-center gap-3 bg-slate-900 text-white pl-6 pr-4 py-3 rounded-lg hover:bg-slate-800 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              >
+                <div className="text-left">
+                  <div className="text-[10px] uppercase text-slate-400 font-bold tracking-wider">Next Section</div>
+                  <div className="font-semibold text-lg leading-none">{nextSection.title}</div>
+                </div>
+                <ArrowRight size={20} className="text-blue-400 group-hover:translate-x-1 transition-transform" />
+              </button>
+            </div>
+          )}
+
+          {isLastSection && (
+            <div className="space-y-6 animate-fade-in-up">
+              {/* Completion Card */}
+              <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-6 shadow-sm">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-white p-3 rounded-full text-green-600 shadow-sm">
+                      <Check size={28} />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-green-900">Your resume is ready!</h4>
+                      <p className="text-sm text-green-700">Everything looks good. You can now preview and download.</p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => window.print()}
+                    className="w-full md:w-auto px-8 py-3 bg-green-600 text-white font-bold rounded-lg hover:bg-green-700 transition-all shadow-md flex items-center justify-center gap-2 transform hover:scale-105"
+                  >
+                    <FileText size={18} /> Preview & Export PDF
+                  </button>
+                </div>
+              </div>
+
+              {/* Custom Section Prompt */}
+              <div className="flex flex-col items-center justify-center pt-2">
+                <p className="text-sm text-gray-400 mb-3 uppercase tracking-wider font-semibold">Or add more details</p>
+                <button
+                  onClick={() => addSection('custom')}
+                  className="flex items-center gap-2 px-5 py-2.5 text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-full font-medium transition-colors"
+                >
+                  <Plus size={18} /> Add a Custom Section
+                </button>
+                <p className="text-xs text-gray-400 mt-2">Useful for Awards, Certifications, or Hobbies</p>
+              </div>
+            </div>
+          )}
+        </div>
 
       </div>
       
