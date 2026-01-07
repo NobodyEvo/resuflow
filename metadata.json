@@ -1,0 +1,5 @@
+{
+  "name": "ResuFlow",
+  "description": "A split-screen visual resume builder designed for professional, ATS-friendly resumes with real-time preview.",
+  "requestFramePermissions": []
+}
